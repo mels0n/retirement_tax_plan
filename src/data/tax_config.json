@@ -1,0 +1,484 @@
+{
+    "2025": {
+        "federal": {
+            "standardDeduction": {
+                "single": 15000,
+                "mfj": 30000,
+                "hoh": 22500,
+                "seniorBonus": 1600
+            },
+            "brackets": {
+                "single": [
+                    {
+                        "rate": 0.10,
+                        "min": 0,
+                        "max": 11925
+                    },
+                    {
+                        "rate": 0.12,
+                        "min": 11926,
+                        "max": 48475
+                    },
+                    {
+                        "rate": 0.22,
+                        "min": 48476,
+                        "max": 103350
+                    },
+                    {
+                        "rate": 0.24,
+                        "min": 103351,
+                        "max": 197300
+                    },
+                    {
+                        "rate": 0.32,
+                        "min": 197301,
+                        "max": 250525
+                    },
+                    {
+                        "rate": 0.35,
+                        "min": 250526,
+                        "max": 626350
+                    },
+                    {
+                        "rate": 0.37,
+                        "min": 626351,
+                        "max": null
+                    }
+                ],
+                "mfj": [
+                    {
+                        "rate": 0.10,
+                        "min": 0,
+                        "max": 23850
+                    },
+                    {
+                        "rate": 0.12,
+                        "min": 23851,
+                        "max": 96950
+                    },
+                    {
+                        "rate": 0.22,
+                        "min": 96951,
+                        "max": 206700
+                    },
+                    {
+                        "rate": 0.24,
+                        "min": 206701,
+                        "max": 394600
+                    },
+                    {
+                        "rate": 0.32,
+                        "min": 394601,
+                        "max": 501050
+                    },
+                    {
+                        "rate": 0.35,
+                        "min": 501051,
+                        "max": 751600
+                    },
+                    {
+                        "rate": 0.37,
+                        "min": 751601,
+                        "max": null
+                    }
+                ],
+                "hoh": [
+                    {
+                        "rate": 0.10,
+                        "min": 0,
+                        "max": 17000
+                    },
+                    {
+                        "rate": 0.12,
+                        "min": 17001,
+                        "max": 64850
+                    },
+                    {
+                        "rate": 0.22,
+                        "min": 64851,
+                        "max": 103350
+                    },
+                    {
+                        "rate": 0.24,
+                        "min": 103351,
+                        "max": 197300
+                    },
+                    {
+                        "rate": 0.32,
+                        "min": 197301,
+                        "max": 250525
+                    },
+                    {
+                        "rate": 0.35,
+                        "min": 250526,
+                        "max": 626350
+                    },
+                    {
+                        "rate": 0.37,
+                        "min": 626351,
+                        "max": null
+                    }
+                ]
+            },
+            "ltcgBrackets": {
+                "single": [
+                    {
+                        "rate": 0.00,
+                        "min": 0,
+                        "max": 48350
+                    },
+                    {
+                        "rate": 0.15,
+                        "min": 48351,
+                        "max": 533400
+                    },
+                    {
+                        "rate": 0.20,
+                        "min": 533401,
+                        "max": null
+                    }
+                ],
+                "mfj": [
+                    {
+                        "rate": 0.00,
+                        "min": 0,
+                        "max": 96700
+                    },
+                    {
+                        "rate": 0.15,
+                        "min": 96701,
+                        "max": 600050
+                    },
+                    {
+                        "rate": 0.20,
+                        "min": 600051,
+                        "max": null
+                    }
+                ],
+                "hoh": [
+                    {
+                        "rate": 0.00,
+                        "min": 0,
+                        "max": 64750
+                    },
+                    {
+                        "rate": 0.15,
+                        "min": 64751,
+                        "max": 566700
+                    },
+                    {
+                        "rate": 0.20,
+                        "min": 566701,
+                        "max": null
+                    }
+                ]
+            }
+        },
+        "missouri": {
+            "standardDeduction": {
+                "single": 15000,
+                "mfj": 30000,
+                "hoh": 22500
+            },
+            "brackets": [
+                {
+                    "rate": 0.00,
+                    "min": 0,
+                    "max": 100
+                },
+                {
+                    "rate": 0.0200,
+                    "min": 101,
+                    "max": 1088
+                },
+                {
+                    "rate": 0.0250,
+                    "min": 1089,
+                    "max": 2176
+                },
+                {
+                    "rate": 0.0300,
+                    "min": 2177,
+                    "max": 3264
+                },
+                {
+                    "rate": 0.0350,
+                    "min": 3265,
+                    "max": 4352
+                },
+                {
+                    "rate": 0.0400,
+                    "min": 4353,
+                    "max": 5440
+                },
+                {
+                    "rate": 0.0450,
+                    "min": 5441,
+                    "max": 6528
+                },
+                {
+                    "rate": 0.0480,
+                    "min": 6529,
+                    "max": 8704
+                },
+                {
+                    "rate": 0.0470,
+                    "min": 8705,
+                    "max": null
+                }
+            ],
+            "exemptions": {
+                "socialSecurity": 1.0,
+                "publicPension": 1.0,
+                "militaryPension": 1.0,
+                "privatePensionCap": 6000,
+                "privatePensionPhaseOut": {
+                    "single": 85000,
+                    "mfj": 100000,
+                    "hoh": 85000
+                }
+            }
+        }
+    },
+    "2026": {
+        "federal": {
+            "standardDeduction": {
+                "single": 15500,
+                "mfj": 31000,
+                "hoh": 23250,
+                "seniorBonus": 1650
+            },
+            "brackets": {
+                "single": [
+                    {
+                        "rate": 0.10,
+                        "min": 0,
+                        "max": 12300
+                    },
+                    {
+                        "rate": 0.12,
+                        "min": 12301,
+                        "max": 50000
+                    },
+                    {
+                        "rate": 0.22,
+                        "min": 50001,
+                        "max": 106000
+                    },
+                    {
+                        "rate": 0.24,
+                        "min": 106001,
+                        "max": 202000
+                    },
+                    {
+                        "rate": 0.32,
+                        "min": 202001,
+                        "max": 258000
+                    },
+                    {
+                        "rate": 0.35,
+                        "min": 258001,
+                        "max": 645000
+                    },
+                    {
+                        "rate": 0.37,
+                        "min": 645001,
+                        "max": null
+                    }
+                ],
+                "mfj": [
+                    {
+                        "rate": 0.10,
+                        "min": 0,
+                        "max": 24600
+                    },
+                    {
+                        "rate": 0.12,
+                        "min": 24601,
+                        "max": 100000
+                    },
+                    {
+                        "rate": 0.22,
+                        "min": 100001,
+                        "max": 212000
+                    },
+                    {
+                        "rate": 0.24,
+                        "min": 212001,
+                        "max": 404000
+                    },
+                    {
+                        "rate": 0.32,
+                        "min": 404001,
+                        "max": 516000
+                    },
+                    {
+                        "rate": 0.35,
+                        "min": 516001,
+                        "max": 774000
+                    },
+                    {
+                        "rate": 0.37,
+                        "min": 774001,
+                        "max": null
+                    }
+                ],
+                "hoh": [
+                    {
+                        "rate": 0.10,
+                        "min": 0,
+                        "max": 17500
+                    },
+                    {
+                        "rate": 0.12,
+                        "min": 17501,
+                        "max": 66800
+                    },
+                    {
+                        "rate": 0.22,
+                        "min": 66801,
+                        "max": 106000
+                    },
+                    {
+                        "rate": 0.24,
+                        "min": 106001,
+                        "max": 202000
+                    },
+                    {
+                        "rate": 0.32,
+                        "min": 202001,
+                        "max": 258000
+                    },
+                    {
+                        "rate": 0.35,
+                        "min": 258001,
+                        "max": 645000
+                    },
+                    {
+                        "rate": 0.37,
+                        "min": 645001,
+                        "max": null
+                    }
+                ]
+            },
+            "ltcgBrackets": {
+                "single": [
+                    {
+                        "rate": 0.00,
+                        "min": 0,
+                        "max": 49850
+                    },
+                    {
+                        "rate": 0.15,
+                        "min": 49851,
+                        "max": 550000
+                    },
+                    {
+                        "rate": 0.20,
+                        "min": 550001,
+                        "max": null
+                    }
+                ],
+                "mfj": [
+                    {
+                        "rate": 0.00,
+                        "min": 0,
+                        "max": 99700
+                    },
+                    {
+                        "rate": 0.15,
+                        "min": 99701,
+                        "max": 618000
+                    },
+                    {
+                        "rate": 0.20,
+                        "min": 618001,
+                        "max": null
+                    }
+                ],
+                "hoh": [
+                    {
+                        "rate": 0.00,
+                        "min": 0,
+                        "max": 66750
+                    },
+                    {
+                        "rate": 0.15,
+                        "min": 66751,
+                        "max": 584000
+                    },
+                    {
+                        "rate": 0.20,
+                        "min": 584001,
+                        "max": null
+                    }
+                ]
+            }
+        },
+        "missouri": {
+            "standardDeduction": {
+                "single": 15500,
+                "mfj": 31000,
+                "hoh": 23250
+            },
+            "brackets": [
+                {
+                    "rate": 0.00,
+                    "min": 0,
+                    "max": 100
+                },
+                {
+                    "rate": 0.0200,
+                    "min": 101,
+                    "max": 1100
+                },
+                {
+                    "rate": 0.0250,
+                    "min": 1101,
+                    "max": 2200
+                },
+                {
+                    "rate": 0.0300,
+                    "min": 2201,
+                    "max": 3300
+                },
+                {
+                    "rate": 0.0350,
+                    "min": 3301,
+                    "max": 4400
+                },
+                {
+                    "rate": 0.0400,
+                    "min": 4401,
+                    "max": 5500
+                },
+                {
+                    "rate": 0.0450,
+                    "min": 5501,
+                    "max": 6600
+                },
+                {
+                    "rate": 0.0480,
+                    "min": 6601,
+                    "max": 8800
+                },
+                {
+                    "rate": 0.0470,
+                    "min": 8801,
+                    "max": null
+                }
+            ],
+            "exemptions": {
+                "socialSecurity": 1.0,
+                "publicPension": 1.0,
+                "militaryPension": 1.0,
+                "privatePensionCap": 6000,
+                "privatePensionPhaseOut": {
+                    "single": 85000,
+                    "mfj": 100000,
+                    "hoh": 85000
+                }
+            }
+        }
+    }
+}
