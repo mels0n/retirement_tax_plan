@@ -2,13 +2,9 @@ import { TaxYearToggle } from '@/features/tax-form/ui/TaxYearToggle';
 import { PersonalDetailsForm } from '@/features/tax-form/ui/PersonalDetailsForm';
 import { IncomeForm } from '@/features/tax-form/ui/IncomeForm';
 import { TaxSummary } from '@/widgets/tax-summary/ui/TaxSummary';
-const SSOptimization = dynamic(() => import('@/widgets/optimization-dashboard/ui/SSOptimization').then(mod => mod.SSOptimization), {
-  loading: () => <div className="h-[400px] animate-pulse bg-zinc-100 dark:bg-zinc-800 rounded-xl" />,
-  ssr: false
-});
+import { SSOptimization } from '@/widgets/optimization-dashboard/ui/LazySSOptimization';
 import { OptimizationInsights } from '@/widgets/optimization-dashboard/ui/OptimizationInsights';
 import { AiFaq } from '@/features/documentation/ui/AiFaq';
-import dynamic from 'next/dynamic';
 
 export default function Home() {
   return (
