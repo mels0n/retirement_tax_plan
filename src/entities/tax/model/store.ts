@@ -62,9 +62,14 @@ const initialInputs: TaxInputs = {
     }
 };
 
+const currentYearStr = new Date().getFullYear().toString();
+const defaultYear: TaxYear = (currentYearStr === '2025' || currentYearStr === '2026')
+    ? (currentYearStr as TaxYear)
+    : '2025';
+
 export const useTaxStore = create<TaxState>((set, get) => ({
     inputs: initialInputs,
-    year: '2025',
+    year: defaultYear,
     federalResult: null,
 
     setYear: (year) => {
