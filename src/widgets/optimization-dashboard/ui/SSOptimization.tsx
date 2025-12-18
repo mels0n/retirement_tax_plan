@@ -101,7 +101,7 @@ export const SSOptimization = () => {
 
             <div className="grid grid-cols-3 gap-4 text-center">
                 <div className="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-                    <h3 className="text-sm font-medium text-zinc-500">Age 62</h3>
+                    <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Age 62</h3>
                     <p className="text-lg font-bold text-zinc-900 dark:text-zinc-100">${Math.round(benefit62)}/mo</p>
                 </div>
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
@@ -115,7 +115,7 @@ export const SSOptimization = () => {
             </div>
 
             <div className="h-[300px]">
-                <h3 className="text-sm font-medium text-zinc-500 mb-2">
+                <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">
                     {reinvest ? 'Cumulative Value (Invested)' : 'Cumulative Benefits Received'}
                 </h3>
                 <ResponsiveContainer width="100%" height="100%">

@@ -21,10 +21,11 @@ export const PersonalDetailsForm = () => {
 
             <div className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                    <label htmlFor="filingStatus" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
                         Filing Status
                     </label>
                     <select
+                        id="filingStatus"
                         value={inputs.filingStatus}
                         onChange={handleFilingStatusChange}
                         className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 outline-none"

@@ -31,7 +31,7 @@ export const TaxSummary = () => {
     const Card = ({ title, value, subtext, highlight = false, tooltip }: { title: string; value: string; subtext?: string; highlight?: boolean; tooltip?: string }) => (
         <div className={`p-4 rounded-lg border ${highlight ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800' : 'bg-zinc-50 border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700'}`}>
             <div className="flex items-center">
-                <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{title}</h3>
+                <h3 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">{title}</h3>
                 {tooltip && <Tooltip content={tooltip} />}
             </div>
             <p className={`text-2xl font-bold mt-1 ${highlight ? 'text-blue-600 dark:text-blue-400' : 'text-zinc-900 dark:text-zinc-100'}`}>
@@ -113,7 +113,7 @@ export const TaxSummary = () => {
 
                 <div className="border-t border-zinc-200 dark:border-zinc-700 pt-3">
                     <div className="flex items-center mb-1">
-                        <h3 className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Marginal Tax Bracket</h3>
+                        <h3 className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Marginal Tax Bracket</h3>
                         <Tooltip content="The tax rate applied to your last dollar of Ordinary Income. Does not include Capital Gains rates." />
                     </div>
                     <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
