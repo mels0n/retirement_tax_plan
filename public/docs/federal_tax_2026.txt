@@ -1,0 +1,86 @@
+# Federal Tax Logic (2026)
+
+**Source**: **One Big Beautiful Bill Act (OBBB)**.
+See: [IRS Release on OBBB Inflation Adjustments](https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026-including-amendments-from-the-one-big-beautiful-bill)
+
+This document details the federal tax calculation logic implemented in the Retirement Tax Plan application for the tax year **2026**, incorporating changes from the "One Big Beautiful Bill" Act.
+
+## 1. Income Categorization
+
+Income is classified into two buckets:
+
+*   **Ordinary Income**: Wages, Social Security (taxable portion), Pensions, IRA Withdrawals, Short-Term Capital Gains.
+*   **Long-Term Capital Gains (LTCG)**: Gains from assets held for more than one year.
+
+## 2. Standard Deduction
+
+The Standard Deduction reduces the amount of Ordinary Income subject to tax.
+
+| Filing Status | Standard Deduction |
+| :--- | :--- |
+| **Single** | $16,100 |
+| **Married Filing Separately (MFS)** | $16,100 |
+| **Married Filing Jointly (MFJ)** | $32,200 |
+| **Head of Household (HoH)** | $24,150 |
+
+### Senior Bonus (Age 65+)
+The OBBB significantly enhances the deduction for seniors.
+1.  **Standard Senior Bonus**:
+    *   **Single / HoH**: $2,050 additional deduction.
+    *   **MFJ / MFS**: $1,650 additional deduction per person.
+2.  **OBBB Supplemental Senior Deduction**:
+    *   **Amount**: An additional **$6,000** per eligible senior ($12,000 for MFJ if both 65+).
+    *   **Phase-out**: This extra deduction is eliminated if Modified AGI exceeds:
+        *   $75,000 for Single/MFS/HoH.
+        *   $150,000 for Married Filing Jointly.
+
+*Example*: A Single senior with $50k income receives: $16,100 (Standard) + $2,050 (Bonus) + $6,000 (OBBB) = **$24,150 Total Deduction**.
+
+## 3. Social Security Taxability
+
+Social Security benefits are not fully taxable. The taxable portion is determined by **Provisional Income**.
+
+**Formula**:
+`Provisional Income = Modified AGI + (0.5 * Social Security Benefits)`
+*(Note: In this application, Modified AGI is approximated as Total Income excluding SS)*
+
+### Taxability Thresholds
+
+**Single / HoH / MFS**:
+*   **0% Taxable**: Provisional Income < $25,000
+*   **Up to 50% Taxable**: $25,000 ≤ Provisional Income < $34,000
+*   **Up to 85% Taxable**: Provisional Income ≥ $34,000
+
+**Married Filing Jointly (MFJ)**:
+*   **0% Taxable**: Provisional Income < $32,000
+*   **Up to 50% Taxable**: $32,000 ≤ Provisional Income < $44,000
+*   **Up to 85% Taxable**: Provisional Income ≥ $44,000
+
+*The application calculates the exact taxable amount using the standard IRS worksheet logic.*
+
+## 4. Ordinary Income Tax Brackets (OBBB 2026)
+
+Ordinary income (after deductions) is taxed according to the progressive tax brackets below.
+
+| Rate | Single | MFJ | HoH | MFS |
+| :--- | :--- | :--- | :--- | :--- |
+| **10%** | $0 - $12,400 | $0 - $24,800 | $0 - $17,500 | $0 - $12,400 |
+| **12%** | $12,401 - $50,400 | $24,801 - $100,800 | $17,501 - $66,800 | $12,401 - $50,400 |
+| **22%** | $50,401 - $105,700 | $100,801 - $211,400 | $66,801 - $106,000 | $50,401 - $105,700 |
+| **24%** | $105,701 - $201,775 | $211,401 - $403,550 | $106,001 - $202,000 | $105,701 - $201,775 |
+| **32%** | $201,776 - $256,225 | $403,551 - $512,450 | $202,001 - $258,000 | $201,776 - $256,225 |
+| **35%** | $256,226 - $640,600 | $512,451 - $768,700 | $258,001 - $645,000 | $256,226 - $640,600 |
+| **37%** | $640,601+ | $768,701+ | $645,001+ | $640,601+ |
+
+## 5. Long-Term Capital Gains (LTCG) Tax Brackets
+
+LTCG and Qualified Dividends benefit from lower tax rates (0%, 15%, 20%).
+**Stacking Rule**: LTCG logic "sits on top" of taxable ordinary income. The bracket threshold applies to (Taxable Ordinary Income + LTCG).
+
+| Rate | Single | MFJ | HoH | MFS |
+| :--- | :--- | :--- | :--- | :--- |
+| **0%** | $0 - $49,850 | $0 - $99,700 | $0 - $66,750 | $0 - $49,850 |
+| **15%** | $49,851 - $550,000 | $99,701 - $618,000 | $66,751 - $584,000 | $49,851 - $550,000 |
+| **20%** | $550,001+ | $618,001+ | $584,001+ | $550,001+ |
+
+*Note: The Net Investment Income Tax (NIIT) of 3.8% is not currently implemented in this model.*

@@ -1,7 +1,7 @@
 'use client';
 
-import { useTaxStore } from '../store/useTaxStore';
-import { NumberInput } from './ui/NumberInput';
+import { useTaxStore } from '@/entities/tax/model/store';
+import { NumberInput } from '@/shared/ui/NumberInput';
 
 export const IncomeForm = () => {
     const { inputs, updateInputs } = useTaxStore();
@@ -40,28 +40,28 @@ export const IncomeForm = () => {
                         value={inputs.income.socialSecurityDisability}
                         onChange={(v) => handleIncomeChange('socialSecurityDisability', v)}
                         prefix="$"
-                        tooltip="Social Security Disability Insurance benefits. Taxed similarly to regular SS federally, but often exempt in MO."
+                        tooltip="Social Security Disability Insurance benefits. Taxed similarly to regular SS federally."
                     />
                     <NumberInput
                         label="Public Pension"
                         value={inputs.income.pensionPublic}
                         onChange={(v) => handleIncomeChange('pensionPublic', v)}
                         prefix="$"
-                        tooltip="Pension from federal, state, or local government employment. 100% Exempt in MO."
+                        tooltip="Pension from federal, state, or local government employment."
                     />
                     <NumberInput
                         label="Military Pension"
                         value={inputs.income.pensionMilitary}
                         onChange={(v) => handleIncomeChange('pensionMilitary', v)}
                         prefix="$"
-                        tooltip="Pension from military service. 100% Exempt in MO."
+                        tooltip="Pension from military service."
                     />
                     <NumberInput
                         label="Private Pension"
                         value={inputs.income.pensionPrivate}
                         onChange={(v) => handleIncomeChange('pensionPrivate', v)}
                         prefix="$"
-                        tooltip="Pension from private employers. MO deduction capped at $6,000 (subject to income limits)."
+                        tooltip="Pension from private employers."
                     />
                     <NumberInput
                         label="Traditional IRA / 401k"

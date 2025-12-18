@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateFederalTax, calculateMissouriTax, TaxInputs } from './taxEngine';
+import { calculateFederalTax, TaxInputs } from './taxEngine';
 
 const emptyIncome = {
     wages: 0,
@@ -10,10 +10,18 @@ const emptyIncome = {
     pensionPrivate: 0,
     iraWithdrawals: 0,
     ltcg: 0,
-    stcg: 0
+    stcg: 0,
+    dividends: 0,
+    interest: 0
 };
 
 describe('Federal Tax Engine', () => {
+    const defaultInputs: TaxInputs = {
+        filingStatus: 'single',
+        ageApplicant: 60, // Default, will be overridden in specific tests
+        income: emptyIncome
+    };
+
     it('should calculate standard deduction correctly for Single 2025', () => {
         const inputs: TaxInputs = {
             filingStatus: 'single',
@@ -24,6 +32,28 @@ describe('Federal Tax Engine', () => {
         expect(result.standardDeduction).toBe(15000);
     });
 
+    it('should calculate standard deduction with Senior Bonus for Single 65+ 2026 (OBBB Base)', () => {
+        const inputs = {
+            ...defaultInputs,
+            ageApplicant: 67,
+            income: { ...emptyIncome, wages: 50000 } // Below phase-out
+        };
+        const result = calculateFederalTax(inputs, '2026');
+        // 16100 (Std) + 2050 (Bonus) + 6000 (OBBB) = 24150
+        expect(result.standardDeduction).toBe(16100 + 2050 + 6000);
+    });
+
+    it('should phase out OBBB Bonus for Single 65+ 2026 if income too high', () => {
+        const inputs = {
+            ...defaultInputs,
+            ageApplicant: 67,
+            income: { ...emptyIncome, wages: 80000 } // Above $75k phase-out
+        };
+        const result = calculateFederalTax(inputs, '2026');
+        // 16100 (Std) + 2050 (Bonus) + 0 (OBBB Phased out) = 18150
+        expect(result.standardDeduction).toBe(16100 + 2050);
+    });
+
     it('should calculate standard deduction with Senior Bonus for Single 65+ 2025', () => {
         const inputs: TaxInputs = {
             filingStatus: 'single',
@@ -31,7 +61,7 @@ describe('Federal Tax Engine', () => {
             income: emptyIncome
         };
         const result = calculateFederalTax(inputs, '2025');
-        expect(result.standardDeduction).toBe(15000 + 1600);
+        expect(result.standardDeduction).toBe(15000 + 2000);
     });
 
     it('should calculate SS taxability correctly (0% taxable)', () => {
@@ -149,62 +179,4 @@ describe('Federal Tax Engine', () => {
     });
 });
 
-describe('Missouri Tax Engine', () => {
-    it('should exempt Public Pension 100%', () => {
-        const inputs: TaxInputs = {
-            filingStatus: 'single',
-            ageApplicant: 65,
-            income: {
-                ...emptyIncome,
-                pensionPublic: 50000,
-                wages: 10000
-            }
-        };
-        // Federal AGI = 60000.
-        const fedResult = calculateFederalTax(inputs, '2025');
-        const moResult = calculateMissouriTax(inputs, fedResult.adjustedGrossIncome, '2025');
 
-        expect(moResult.subtractions.publicPension).toBe(50000);
-        expect(moResult.missouriAGI).toBe(Math.max(0, 60000 - 50000));
-    });
-
-    it('should cap Private Pension exemption', () => {
-        const inputs: TaxInputs = {
-            filingStatus: 'single',
-            ageApplicant: 65,
-            income: {
-                ...emptyIncome,
-                pensionPrivate: 10000,
-                wages: 20000
-            }
-        };
-        // Federal AGI = 30000.
-        // Private Pension Cap = 6000.
-        // Phase out limit = 85000. 30000 < 85000.
-
-        const fedResult = calculateFederalTax(inputs, '2025');
-        const moResult = calculateMissouriTax(inputs, fedResult.adjustedGrossIncome, '2025');
-
-        expect(moResult.subtractions.privatePension).toBe(6000);
-    });
-
-    it('should phase out Private Pension exemption', () => {
-        const inputs: TaxInputs = {
-            filingStatus: 'single',
-            ageApplicant: 65,
-            income: {
-                ...emptyIncome,
-                pensionPrivate: 10000,
-                wages: 100000
-            }
-        };
-        // Federal AGI = 110000.
-        // Phase out limit = 85000.
-        // 110000 > 85000 -> Exemption = 0.
-
-        const fedResult = calculateFederalTax(inputs, '2025');
-        const moResult = calculateMissouriTax(inputs, fedResult.adjustedGrossIncome, '2025');
-
-        expect(moResult.subtractions.privatePension).toBe(0);
-    });
-});

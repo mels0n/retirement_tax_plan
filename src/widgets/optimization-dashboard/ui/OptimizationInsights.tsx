@@ -1,8 +1,8 @@
 'use client';
 
-import { useTaxStore } from '../store/useTaxStore';
-import taxConfig from '../data/tax_config.json';
-import { Tooltip } from './ui/Tooltip';
+import { useTaxStore } from '@/entities/tax/model/store';
+import { getTaxBrackets, getLtcgBrackets } from '@/entities/tax/lib/taxEngine';
+import { Tooltip } from '@/shared/ui/Tooltip';
 
 export const OptimizationInsights = () => {
     const { federalResult, inputs, year } = useTaxStore();
@@ -17,7 +17,8 @@ export const OptimizationInsights = () => {
     const stdDed = federalResult.standardDeduction;
     const ordinaryTaxable = Math.max(0, ordinaryIncome - stdDed);
 
-    const brackets = taxConfig[year].federal.brackets[inputs.filingStatus];
+    // @ts-ignore
+    const brackets = getTaxBrackets(year, inputs.filingStatus);
     let currentOrdBracket = brackets[0];
     let nextOrdBracket = null;
 
@@ -35,7 +36,8 @@ export const OptimizationInsights = () => {
 
     // --- LTCG Optimization ---
     const totalTaxable = federalResult.taxableIncome;
-    const ltcgBrackets = taxConfig[year].federal.ltcgBrackets[inputs.filingStatus];
+    // @ts-ignore
+    const ltcgBrackets = getLtcgBrackets(year, inputs.filingStatus);
     let currentLtcgBracket = ltcgBrackets[0];
 
     for (const b of ltcgBrackets) {
@@ -64,7 +66,36 @@ export const OptimizationInsights = () => {
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Tax Optimization Insights</h2>
 
             <div className="grid grid-cols-1 gap-3">
-                {/* Ordinary Income Opportunity */}
+                {/* Standard Deduction (0% Bracket) */}
+                <div className="relative p-3 rounded-lg bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700">
+                    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                        <div className="absolute -right-4 -bottom-4 text-zinc-100 dark:text-zinc-700/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
+                                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-4.28 9.22a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V8.25a.75.75 0 00-1.5 0v5.94l-1.72-1.72z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div className="relative z-10">
+                        <div className="flex items-center mb-1">
+                            <h3 className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Standard Deduction (0% Tax)</h3>
+                            <Tooltip content="The Standard Deduction is the amount of income you can earn tax-free before you start paying federal income tax." />
+                        </div>
+                        {ordinaryIncome < stdDed ? (
+                            <>
+                                <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-200 mb-0.5">
+                                    {formatCurrency(stdDed - ordinaryIncome)}
+                                </p>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                                    remaining tax-free space.
+                                </p>
+                            </>
+                        ) : (
+                            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                                Fully utilized. You have surpassed the tax-free threshold of <strong>{formatCurrency(stdDed)}</strong>.
+                            </p>
+                        )}
+                    </div>
+                </div>
                 {/* Ordinary Income Opportunity */}
                 <div className="relative p-3 rounded-lg bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
                     {/* Decorative Icon Container - Clipped */}
@@ -137,6 +168,42 @@ export const OptimizationInsights = () => {
                             </>
                         )}
                     </div>
+                </div>
+            </div>
+
+            {/* Social Security Taxability */}
+            <div className="relative p-3 rounded-lg bg-purple-50 border border-purple-200 dark:bg-purple-900/20 dark:border-purple-800">
+                <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                    <div className="absolute -right-4 -bottom-4 text-purple-100 dark:text-purple-900/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
+                            <path fillRule="evenodd" d="M4.5 3.75a3 3 0 00-3 3v10.5a3 3 0 003 3h15a3 3 0 003-3V6.75a3 3 0 00-3-3h-15zm4.125 3a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm-3.873 8.703a4.126 4.126 0 017.746 0 .75.75 0 01-.351.92 7.47 7.47 0 01-3.522.877 7.47 7.47 0 01-3.522-.877.75.75 0 01-.351-.92zM15 8.25a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5h-3.75a.75.75 0 01-.75-.75zM15 12a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5h-3.75a.75.75 0 01-.75-.75zM15 15.75a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5h-3.75a.75.75 0 01-.75-.75z" clipRule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+                <div className="relative z-10">
+                    <div className="flex items-center mb-1">
+                        <h3 className="text-xs font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wide">SS Taxability</h3>
+                        <Tooltip content="Social Security becomes taxable based on your 'Provisional Income' (AGI + 50% of SS benefits)." />
+                    </div>
+                    {(() => {
+                        const totalSS = inputs.income.socialSecurity + inputs.income.socialSecurityDisability;
+                        if (totalSS === 0) return <p className="text-sm text-zinc-500">No Social Security income.</p>;
+
+                        const otherIncome = federalResult.adjustedGrossIncome - federalResult.taxableSS;
+                        const provisionalIncome = otherIncome + (0.5 * totalSS);
+                        const percentTaxable = totalSS > 0 ? (federalResult.taxableSS / totalSS) * 100 : 0;
+
+                        return (
+                            <>
+                                <p className="text-sm text-purple-900 dark:text-purple-100 mb-1">
+                                    <strong>{percentTaxable.toFixed(1)}%</strong> of your benefits are taxable.
+                                </p>
+                                <p className="text-xs text-purple-700 dark:text-purple-300">
+                                    Provisional Income: <strong>{formatCurrency(provisionalIncome)}</strong>
+                                </p>
+                            </>
+                        );
+                    })()}
                 </div>
             </div>
         </div>

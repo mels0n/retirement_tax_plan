@@ -1,13 +1,13 @@
 'use client';
 
-import { useTaxStore } from '../store/useTaxStore';
-import taxConfig from '../data/tax_config.json';
-import { Tooltip } from './ui/Tooltip';
+import { useTaxStore } from '@/entities/tax/model/store';
+import { getTaxBrackets } from '@/entities/tax/lib/taxEngine';
+import { Tooltip } from '@/shared/ui/Tooltip';
 
-export const SummaryCards = () => {
-    const { federalResult, missouriResult, inputs, year } = useTaxStore();
+export const TaxSummary = () => {
+    const { federalResult, inputs, year } = useTaxStore();
 
-    if (!federalResult || !missouriResult) {
+    if (!federalResult) {
         return (
             <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
                 <p className="text-zinc-500 dark:text-zinc-400 text-center">
@@ -17,7 +17,7 @@ export const SummaryCards = () => {
         );
     }
 
-    const totalTax = federalResult.totalFederalTax + missouriResult.totalStateTax;
+    const totalTax = federalResult.totalFederalTax;
     const grossIncome = federalResult.grossIncome;
     const effectiveRate = grossIncome > 0 ? (totalTax / grossIncome) * 100 : 0;
     const netIncome = grossIncome - totalTax;
@@ -42,7 +42,8 @@ export const SummaryCards = () => {
     );
 
     // Calculate Marginal Bracket Info
-    const brackets = taxConfig[year].federal.brackets[inputs.filingStatus];
+    // @ts-ignore
+    const brackets = getTaxBrackets(year, inputs.filingStatus);
     // Use Ordinary Taxable Income for the bracket calculation
     const ordinaryTaxable = Math.max(0, (federalResult.adjustedGrossIncome - inputs.income.ltcg) - federalResult.standardDeduction);
 
@@ -94,7 +95,7 @@ export const SummaryCards = () => {
                     <Card
                         title="Total Tax"
                         value={formatCurrency(totalTax)}
-                        tooltip="Combined Federal and Missouri State tax liability."
+                        tooltip="Federal tax liability."
                     />
                     <Card
                         title="Effective Rate"
@@ -107,10 +108,6 @@ export const SummaryCards = () => {
                     <div className="flex justify-between text-xs">
                         <span className="text-zinc-600 dark:text-zinc-400">Federal Tax</span>
                         <span className="font-medium text-zinc-900 dark:text-zinc-100">{formatCurrency(federalResult.totalFederalTax)}</span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                        <span className="text-zinc-600 dark:text-zinc-400">Missouri Tax</span>
-                        <span className="font-medium text-zinc-900 dark:text-zinc-100">{formatCurrency(missouriResult.totalStateTax)}</span>
                     </div>
                 </div>
 

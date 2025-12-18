@@ -1,0 +1,78 @@
+# Federal Tax Logic (2025)
+
+**Source**: [IRS Revenue Procedure 24-40 (Inflation Adjustments for 2025)](https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2025)
+
+This document details the federal tax calculation logic implemented in the Retirement Tax Plan application for the tax year **2025**.
+
+## 1. Income Categorization
+
+Income is classified into two buckets:
+
+*   **Ordinary Income**: Wages, Social Security (taxable portion), Pensions, IRA Withdrawals, Short-Term Capital Gains.
+*   **Long-Term Capital Gains (LTCG)**: Gains from assets held for more than one year.
+
+## 2. Standard Deduction
+
+The Standard Deduction reduces the amount of Ordinary Income subject to tax.
+
+| Filing Status | Standard Deduction |
+| :--- | :--- |
+| **Single** | $15,000 |
+| **Married Filing Separately (MFS)** | $15,000 |
+| **Married Filing Jointly (MFJ)** | $30,000 |
+| **Head of Household (HoH)** | $22,500 |
+
+### Senior Bonus (Age 65+)
+An additional standard deduction is added for filers aged 65 or older.
+*   **Single / HoH**: $2,000 additional deduction.
+*   **MFJ / MFS**: $1,600 additional deduction per person.
+*   *Note*: For MFJ, if both spouses are 65+, the bonus is applied twice ($3,200 total).
+
+## 3. Social Security Taxability
+
+Social Security benefits are not fully taxable. The taxable portion is determined by **Provisional Income**.
+
+**Formula**:
+`Provisional Income = Modified AGI + (0.5 * Social Security Benefits)`
+*(Note: In this application, Modified AGI is approximated as Total Income excluding SS)*
+
+### Taxability Thresholds
+
+**Single / HoH / MFS**:
+*   **0% Taxable**: Provisional Income < $25,000
+*   **Up to 50% Taxable**: $25,000 ≤ Provisional Income < $34,000
+*   **Up to 85% Taxable**: Provisional Income ≥ $34,000
+
+**Married Filing Jointly (MFJ)**:
+*   **0% Taxable**: Provisional Income < $32,000
+*   **Up to 50% Taxable**: $32,000 ≤ Provisional Income < $44,000
+*   **Up to 85% Taxable**: Provisional Income ≥ $44,000
+
+*The application calculates the exact taxable amount using the standard IRS worksheet logic.*
+
+## 4. Ordinary Income Tax Brackets
+
+Ordinary income (after deductions) is taxed according to the progressive tax brackets below.
+
+| Rate | Single | MFJ | HoH | MFS |
+| :--- | :--- | :--- | :--- | :--- |
+| **10%** | $0 - $11,925 | $0 - $23,850 | $0 - $17,000 | $0 - $11,925 |
+| **12%** | $11,926 - $48,475 | $23,851 - $96,950 | $17,001 - $64,850 | $11,926 - $48,475 |
+| **22%** | $48,476 - $103,350 | $96,951 - $206,700 | $64,851 - $103,350 | $48,476 - $103,350 |
+| **24%** | $103,351 - $197,300 | $206,701 - $394,600 | $103,351 - $197,300 | $103,351 - $197,300 |
+| **32%** | $197,301 - $250,525 | $394,601 - $501,050 | $197,301 - $250,525 | $197,301 - $250,525 |
+| **35%** | $250,526 - $626,350 | $501,051 - $751,600 | $250,526 - $626,350 | $250,526 - $626,350 |
+| **37%** | $626,351+ | $751,601+ | $626,351+ | $626,351+ |
+
+## 5. Long-Term Capital Gains (LTCG) Tax Brackets
+
+LTCG and Qualified Dividends benefit from lower tax rates (0%, 15%, 20%).
+**Stacking Rule**: LTCG logic "sits on top" of taxable ordinary income. The bracket threshold applies to (Taxable Ordinary Income + LTCG).
+
+| Rate | Single | MFJ | HoH | MFS |
+| :--- | :--- | :--- | :--- | :--- |
+| **0%** | $0 - $48,350 | $0 - $96,700 | $0 - $64,750 | $0 - $48,350 |
+| **15%** | $48,351 - $533,400 | $96,701 - $600,050 | $64,751 - $566,700 | $48,351 - $533,400 |
+| **20%** | $533,401+ | $600,051+ | $566,701+ | $533,401+ |
+
+*Note: The Net Investment Income Tax (NIIT) of 3.8% is not currently implemented in this model.*

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { NumberInput } from './ui/NumberInput';
-import { Tooltip as InfoTooltip } from './ui/Tooltip';
+import { NumberInput } from '@/shared/ui/NumberInput';
+import { Tooltip as InfoTooltip } from '@/shared/ui/Tooltip';
 
 export const SSOptimization = () => {
     const [fraBenefit, setFraBenefit] = useState(2000); // Monthly benefit at FRA (67)
