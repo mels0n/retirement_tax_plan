@@ -44,6 +44,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Footer } from '@/widgets/layout/ui/Footer';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,9 +54,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         {children}
+        <Footer />
       </body>
     </html>
   );

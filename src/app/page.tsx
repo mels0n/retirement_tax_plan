@@ -4,8 +4,6 @@ import { IncomeForm } from '@/features/tax-form/ui/IncomeForm';
 import { TaxSummary } from '@/widgets/tax-summary/ui/TaxSummary';
 import { SSOptimization } from '@/widgets/optimization-dashboard/ui/SSOptimization';
 import { OptimizationInsights } from '@/widgets/optimization-dashboard/ui/OptimizationInsights';
-import { HowToUse } from '@/features/documentation/ui/HowToUse';
-import { Faq } from '@/features/documentation/ui/Faq';
 import { AiFaq } from '@/features/documentation/ui/AiFaq';
 
 export default function Home() {
@@ -61,8 +59,6 @@ export default function Home() {
 
         {/* Section 3: Documentation & Help */}
         <div className="border-t border-zinc-200 dark:border-zinc-800 pt-8 space-y-12">
-          <HowToUse />
-          <Faq />
           <AiFaq />
         </div>
       </div>

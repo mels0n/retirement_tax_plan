@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://retirement-tax-plan.vercel.app/sitemap.xml
