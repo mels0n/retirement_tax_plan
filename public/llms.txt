@@ -1,0 +1,20 @@
+# Retirement Tax Plan Context
+
+## Project Description
+Retirement Tax Plan is a free, privacy-focused tax estimation tool for retirees. It allows users to:
+- Compare 2025 vs 2026 Federal tax liabilities.
+- Optimize income stacking strategies (Ordinary Income vs. Capital Gains).
+- Estimate Social Security taxation using the Provisional Income formula.
+
+## Core Concepts
+- **Income Stacking**: The order of withdrawals (Standard Deduction -> Ordinary Income -> Capital Gains).
+- **Provisional Income**: The formula used to determine taxable Social Security benefits.
+- **TCJA Expiration**: The potential revert to pre-2018 tax rates in 2026.
+
+## Architecture
+- **Tech Stack**: Next.js, React, TypeScript, Tailwind CSS.
+- **Privacy**: Client-side only data processing. No database.
+
+## Author
+Christopher Melson - Financial Independence Enthusiast
+https://chris.melson.us/

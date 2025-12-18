@@ -45,7 +45,7 @@ export const Footer: React.FC = () => {
                         Not retired yet? Start with reaching financial independence
                     </a>
                     <p className="text-xs text-zinc-400">
-                        &copy; {new Date().getFullYear()} Christopher Melson. All rights reserved.
+                        &copy; {new Date().getFullYear()} <a href="https://chris.melson.us/" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">Christopher Melson</a>. All rights reserved.
                     </p>
                 </div>
             </div>

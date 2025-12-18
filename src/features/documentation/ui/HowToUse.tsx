@@ -17,6 +17,39 @@ import React from 'react';
 export const HowToUse: React.FC = () => {
     return (
         <section className="space-y-6" aria-labelledby="how-to-use-title">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "HowTo",
+                        "name": "How to Use Retirement Tax Plan Calculator",
+                        "description": "Step-by-step guide on how to use the Retirement Tax Plan tool to optimize federal tax liability.",
+                        "step": [
+                            {
+                                "@type": "HowToStep",
+                                "name": "Select Tax Year & Status",
+                                "text": "Start by choosing between 2025 (current laws) and 2026 (post-TCJA expiration). Then, enter your filing status (Single or Married Filing Jointly)."
+                            },
+                            {
+                                "@type": "HowToStep",
+                                "name": "Input Personal Details",
+                                "text": "Specify if you or your spouse are 65 or older or blind. The tool automatically calculates your total deduction baseline."
+                            },
+                            {
+                                "@type": "HowToStep",
+                                "name": "Add Income Streams",
+                                "text": "Add your income sources. Ordinary Income fills bottom brackets first, while Long-Term Capital Gains sit on top with preferential rates."
+                            },
+                            {
+                                "@type": "HowToStep",
+                                "name": "Analyze & Optimize",
+                                "text": "Review the Tax Summary to see your Effective Tax Rate. Use Optimization Insights to find room for Roth conversions or capital gain harvesting."
+                            }
+                        ]
+                    })
+                }}
+            />
             <h2 id="how-to-use-title" className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
                 How to Use
             </h2>

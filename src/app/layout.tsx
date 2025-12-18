@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Retirement Tax Plan | Optimize Your Withdrawal Strategy",
   description: "Free tax estimation tool for retirees. Compare 2025 vs 2026 tax years and optimize your federal tax liability with income stacking strategies.",
   keywords: ["retirement tax calculator", "income stacking", "tax optimization", "2025 tax brackets", "2026 tax brackets", "withdrawal strategy", "Roth conversion"],
-  authors: [{ name: "Christopher Melson", url: "https://financial-independence.melson.us/" }],
+  authors: [{ name: "Christopher Melson", url: "https://chris.melson.us/" }],
   creator: "Christopher Melson",
   openGraph: {
     title: "Retirement Tax Plan | Optimize Your Withdrawal Strategy",
