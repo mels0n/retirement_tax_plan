@@ -3,6 +3,7 @@
 import { useTaxStore } from '@/entities/tax/model/store';
 import { getTaxBrackets, getLtcgBrackets } from '@/entities/tax/lib/taxEngine';
 import { Tooltip } from '@/shared/ui/Tooltip';
+import Link from 'next/link';
 
 export const OptimizationInsights = () => {
     const { federalResult, inputs, year } = useTaxStore();
@@ -98,6 +99,16 @@ export const OptimizationInsights = () => {
                         if (ordinarySpaceLeft === Infinity) isHighestBracket = true;
                     }
 
+                    // Warning Logic (Torpedo Check)
+                    const totalSS = inputs.income.socialSecurity + inputs.income.socialSecurityDisability;
+                    const otherIncome = federalResult.adjustedGrossIncome - federalResult.taxableSS;
+                    const provisionalIncome = otherIncome + (0.5 * totalSS);
+                    // Thresholds for 50% kick-in
+                    let t1 = 25000;
+                    if (inputs.filingStatus === 'mfj') t1 = 32000;
+
+                    const isTorpedoZone = totalSS > 0 && provisionalIncome > t1 && federalResult.taxableSS < (0.85 * totalSS);
+
                     return (
                         <div className={`relative p-3 rounded-lg border ${displayRate === 0 ? 'bg-zinc-50 border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700' : 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'}`}>
                             {/* Decorative Icon Container - Clipped */}
@@ -139,46 +150,89 @@ export const OptimizationInsights = () => {
                                         </p>
                                     </>
                                 )}
+
+                                {/* Interaction Warning: The Tax Torpedo */}
+                                {isTorpedoZone && (
+                                    <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded text-[11px] leading-tight text-yellow-800 dark:text-yellow-200">
+                                        <strong>⚠️ Tax Interaction Alert:</strong><br />
+                                        Adding Ordinary Income here also increases your Provisional Income, causing more Social Security to become taxable.
+                                        <div className="mt-1">
+                                            <Link href="/resources/income-stacking" className="underline hover:text-yellow-900 dark:hover:text-yellow-100 font-medium">
+                                                Visualize how this works &rarr;
+                                            </Link>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     );
                 })()}
 
                 {/* LTCG Opportunity */}
-                <div className="relative p-3 rounded-lg bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800">
-                    {/* Decorative Icon Container - Clipped */}
-                    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
-                        <div className="absolute -right-4 -bottom-4 text-green-100 dark:text-green-900/30">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
-                                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm.75 15.75l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22 6.22-6.22a.75.75 0 111.06 1.06l-6.75 6.75a.75.75 0 01-1.06 0z" clipRule="evenodd" />
-                            </svg>
-                        </div>
-                    </div>
+                {(() => {
+                    // Logic to detect "Tax Torpedo" Interaction
+                    // If adding LTCG increases Provisional Income AND we haven't maxed out SS taxability,
+                    // then LTCG effectively has a "shadow tax" caused by SS.
+                    const totalSS = inputs.income.socialSecurity + inputs.income.socialSecurityDisability;
+                    const otherIncome = federalResult.adjustedGrossIncome - federalResult.taxableSS;
+                    const provisionalIncome = otherIncome + (0.5 * totalSS);
 
-                    {/* Content - Not Clipped */}
-                    <div className="relative z-10">
-                        <div className="flex items-center mb-1">
-                            <h3 className="text-xs font-bold text-green-700 dark:text-green-300 uppercase tracking-wide">Capital Gains Room</h3>
-                            <Tooltip content="The amount of additional Long-Term Capital Gains you can realize while staying in your current preferential tax rate bucket (0% or 15%)." />
-                        </div>
+                    // Thresholds for 50% kick-in
+                    let t1 = 25000;
+                    if (inputs.filingStatus === 'mfj') t1 = 32000;
 
-                        {ltcgSpaceLeft === Infinity ? (
-                            <p className="text-zinc-700 dark:text-zinc-300 text-sm">You are in the highest capital gains bracket (20%).</p>
-                        ) : (
-                            <>
-                                <p className="text-2xl font-bold text-green-800 dark:text-green-200 mb-0.5">
-                                    {formatCurrency(ltcgSpaceLeft)}
-                                </p>
-                                <p className="text-xs text-green-600 dark:text-green-400">
-                                    remaining in the <strong>{(currentLtcgRate * 100).toFixed(0)}%</strong> bracket.
-                                </p>
-                                <p className="text-[10px] text-green-500 dark:text-green-400 mt-1">
-                                    Next dollar taxed at <strong>{(nextLtcgRate * 100).toFixed(0)}%</strong>.
-                                </p>
-                            </>
-                        )}
-                    </div>
-                </div>
+                    const isTorpedoZone = totalSS > 0 && provisionalIncome > t1 && federalResult.taxableSS < (0.85 * totalSS);
+
+                    return (
+                        <div className="relative p-3 rounded-lg bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800">
+                            {/* Decorative Icon Container - Clipped */}
+                            <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                                <div className="absolute -right-4 -bottom-4 text-green-100 dark:text-green-900/30">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
+                                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm.75 15.75l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22 6.22-6.22a.75.75 0 111.06 1.06l-6.75 6.75a.75.75 0 01-1.06 0z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Content - Not Clipped */}
+                            <div className="relative z-10">
+                                <div className="flex items-center mb-1">
+                                    <h3 className="text-xs font-bold text-green-700 dark:text-green-300 uppercase tracking-wide">Capital Gains Room</h3>
+                                    <Tooltip content="The amount of additional Long-Term Capital Gains you can realize while staying in your current preferential tax rate bucket (0% or 15%)." />
+                                </div>
+
+                                {ltcgSpaceLeft === Infinity ? (
+                                    <p className="text-zinc-700 dark:text-zinc-300 text-sm">You are in the highest capital gains bracket (20%).</p>
+                                ) : (
+                                    <>
+                                        <p className="text-2xl font-bold text-green-800 dark:text-green-200 mb-0.5">
+                                            {formatCurrency(ltcgSpaceLeft)}
+                                        </p>
+                                        <p className="text-xs text-green-600 dark:text-green-400">
+                                            remaining in the <strong>{(currentLtcgRate * 100).toFixed(0)}%</strong> bracket.
+                                        </p>
+                                        <p className="text-[10px] text-green-500 dark:text-green-400 mt-1">
+                                            Next dollar taxed at <strong>{(nextLtcgRate * 100).toFixed(0)}%</strong>.
+                                        </p>
+                                    </>
+                                )}
+
+                                {/* Interaction Warning: The Tax Torpedo */}
+                                {isTorpedoZone && (
+                                    <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded text-[11px] leading-tight text-yellow-800 dark:text-yellow-200">
+                                        <strong>⚠️ Tax Interaction Alert:</strong><br />
+                                        Adding Capital Gains in this zone increases your Provisional Income, causing more of your Social Security to become taxable (The &quot;Tax Torpedo&quot;).
+                                        <div className="mt-1">
+                                            <Link href="/resources/income-stacking" className="underline hover:text-yellow-900 dark:hover:text-yellow-100 font-medium">
+                                                Visualize how this works &rarr;
+                                            </Link>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })()}
             </div>
 
             {/* Social Security Taxability */}
@@ -195,47 +249,41 @@ export const OptimizationInsights = () => {
                         <h3 className="text-xs font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wide">SS Taxability</h3>
                         <Tooltip content="Social Security becomes taxable based on your 'Provisional Income' (AGI + 50% of SS benefits)." />
                     </div>
-                    {/* 
-                  Feature-Sliced Design: Social Security Breakpoints 
-                  Architecture: Visualizes the "Provisional Income" zones (0% -> 50% -> 85% taxable).
-                  Helps users understand how close they are to the next taxability cliff.
-                */}
+
                     {(() => {
                         const totalSS = inputs.income.socialSecurity + inputs.income.socialSecurityDisability;
                         if (totalSS === 0) return <p className="text-sm text-zinc-500">No Social Security income.</p>;
 
-                        // Calculate thresholds based on status
+                        // Thresholds
                         let t1 = 25000;
                         let t2 = 34000;
                         if (inputs.filingStatus === 'mfj') {
                             t1 = 32000;
                             t2 = 44000;
                         }
-                        // MFS is technically $0/$0 if living together, but typically 25/34 if separate. 
-                        // For this high-level view, we stick to the standard single/mfj splits.
 
                         const otherIncome = federalResult.adjustedGrossIncome - federalResult.taxableSS;
                         const provisionalIncome = otherIncome + (0.5 * totalSS);
                         const percentTaxable = totalSS > 0 ? (federalResult.taxableSS / totalSS) * 100 : 0;
 
-                        // Determine "Zone" and "Space Left"
+                        // Check if we are in the Torpedo Zone (active phase-in)
+                        const isTorpedoZone = totalSS > 0 && provisionalIncome > t1 && federalResult.taxableSS < (0.85 * totalSS);
+
+                        // Determine "Zone" (Standard Logic)
                         let zoneLabel = "";
                         let spaceLeft = 0;
                         let nextZoneLabel = "";
                         let isMaxed = false;
 
                         if (provisionalIncome < t1) {
-                            // Zone 0: 0% Taxable
                             zoneLabel = "Tax-Free Zone";
                             spaceLeft = t1 - provisionalIncome;
                             nextZoneLabel = "until 50% become taxable";
                         } else if (provisionalIncome < t2) {
-                            // Zone 1: Up to 50% Taxable
                             zoneLabel = "50% Taxability Zone";
                             spaceLeft = t2 - provisionalIncome;
                             nextZoneLabel = "until 85% become taxable";
                         } else {
-                            // Zone 2: Up to 85% Taxable
                             zoneLabel = "Max Taxability Zone (85%)";
                             isMaxed = true;
                         }
@@ -247,17 +295,20 @@ export const OptimizationInsights = () => {
                                 </p>
 
                                 {!isMaxed ? (
-                                    <div className="mt-2 p-2 rounded bg-white/50 dark:bg-black/20 border border-purple-100 dark:border-purple-800/50">
-                                        <p className="text-xl font-bold text-purple-800 dark:text-purple-200">
-                                            {formatCurrency(spaceLeft)}
-                                        </p>
-                                        <p className="text-[10px] text-purple-600 dark:text-purple-300 uppercase tracking-wide font-medium">
-                                            Room {nextZoneLabel}
-                                        </p>
-                                    </div>
+                                    <>
+                                        {/* Standard Display */}
+                                        <div className={`mt-2 p-2 rounded border ${isTorpedoZone ? 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800' : 'bg-white/50 border-purple-100 dark:bg-black/20 dark:border-purple-800/50'}`}>
+                                            <p className={`text-xl font-bold ${isTorpedoZone ? 'text-yellow-800 dark:text-yellow-200' : 'text-purple-800 dark:text-purple-200'}`}>
+                                                {formatCurrency(spaceLeft)}
+                                            </p>
+                                            <p className={`text-xs uppercase tracking-wide font-medium ${isTorpedoZone ? 'text-yellow-700 dark:text-yellow-300' : 'text-purple-600 dark:text-purple-300'}`}>
+                                                {isTorpedoZone ? "Being taxed at a higher marginal rate (Torpedo Zone)" : `Room ${nextZoneLabel}`}
+                                            </p>
+                                        </div>
+                                    </>
                                 ) : (
                                     <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">
-                                        You have reached the maximum taxability tier.
+                                        You are in the <strong>85% Taxability Zone</strong>.
                                     </p>
                                 )}
 
