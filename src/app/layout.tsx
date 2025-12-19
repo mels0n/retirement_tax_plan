@@ -15,13 +15,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Retirement Tax Plan | Optimize Your Withdrawal Strategy",
   description: "Free tax estimation tool for retirees. Compare 2025 vs 2026 tax years and optimize your federal tax liability with income stacking strategies.",
+  metadataBase: new URL('https://retirement.melson.us'),
+  alternates: {
+    canonical: '/',
+  },
   keywords: ["retirement tax calculator", "income stacking", "tax optimization", "2025 tax brackets", "2026 tax brackets", "withdrawal strategy", "Roth conversion"],
   authors: [{ name: "Christopher Melson", url: "https://chris.melson.us/" }],
   creator: "Christopher Melson",
   openGraph: {
     title: "Retirement Tax Plan | Optimize Your Withdrawal Strategy",
     description: "Estimate your Federal taxes with income stacking optimization. Compare 2025 and 2026 tax scenarios.",
-    url: "https://retirement-tax-plan.vercel.app",
+    url: "https://retirement.melson.us",
     siteName: "Retirement Tax Plan",
     locale: "en_US",
     type: "website",

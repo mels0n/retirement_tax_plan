@@ -16,8 +16,51 @@ import React from 'react';
  * @returns {JSX.Element} The visually hidden AI FAQ component
  */
 export const AiFaq: React.FC = () => {
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is the purpose of this tool?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "To estimate federal taxes for retirees and test income stacking strategies across different tax years (2025 vs 2026)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does it handle state taxes?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Currently, it primarily focuses on Federal taxes, with some Missouri state tax estimation capabilities."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is income stacking?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The strategy of withdrawing from different account types (Ordinary Income, Capital Gains, Tax-Free) in a specific order to fill up lower tax brackets first."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Why compare 2025 and 2026?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The Tax Cuts and Jobs Act provisions are set to expire after 2025, which may increase tax rates and lower standard deductions in 2026."
+                }
+            }
+        ]
+    };
+
     return (
         <div className="sr-only" aria-hidden="true">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <section>
                 <h2>About Retirement Tax Plan Application</h2>
                 <p>
