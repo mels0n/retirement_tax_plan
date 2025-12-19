@@ -9,11 +9,15 @@ import React from 'react';
 const faqData = [
     {
         question: "How accurate are the tax calculations?",
-        answer: "The calculations are estimates based on 2025/2026 IRS tax brackets and standard deductions, including adjustments for age (65+) and blindness. While we strive for accuracy, this tool provides an approximation for planning purposes and does not account for every possible credit or deduction. Always consult a tax professional for official filing."
+        answer: "The calculations are estimates based on 2025/2026 IRS tax brackets and standard deductions, including adjustments for age (65+) and blindness. While we strive for precision, this tool provides a strategic overview for planning purposes. It does not account for every complex situation (like AMT, certain business credits, or foreign tax credits)."
+    },
+    {
+        question: "Is this professional tax advice?",
+        answer: "No. This application is a self-directed educational planning tool, not a substitute for a CPA or tax attorney. It handles the most common retirement income streams (Wages, SS, Pensions, IRAs, Capital Gains). If you have complex income sources—such as ISO/NSO stock options, K-1 partnership income, rental properties with depreciation recapture, or significant foreign earnings—these are strictly outside the scope of this model. Always verify your specific plan with a qualified professional."
     },
     {
         question: "Does this tool calculate State Taxes?",
-        answer: "Currently, the tool includes a specialized estimator for Missouri State Tax, complete with its unique standard deduction and bracket system. For other states, it primarily focuses on Federal tax liability."
+        answer: "Currently, calculations focus on Federal tax liability. State taxes vary wildly by jurisdiction (some tax SS, some don't; some tax pensions, others exclude them). Please utilize state-specific resources for that portion of your liability."
     },
     {
         question: "What is 'Income Stacking'?",
@@ -21,7 +25,11 @@ const faqData = [
     },
     {
         question: "How is Social Security taxed?",
-        answer: "The tool estimates the taxable portion of your Social Security benefits using the 'Provisional Income' formula. Depending on your total combined income, up to 85% of your benefits may be taxable. The tool automatically performs this complex calculation for you."
+        answer: "The tool estimates the taxable portion of your Social Security benefits using the 'Provisional Income' formula. Depending on your total combined income, up to 85% of your benefits may be taxable. The tool automatically performs this calculation and treats the taxable portion as ordinary income."
+    },
+    {
+        question: "What is the Net Investment Income Tax (NIIT)?",
+        answer: "The NIIT is an additional 3.8% tax that applies if you have both: 1) Net Investment Income (like capital gains, dividends, and interest) and 2) Modified Adjusted Gross Income (MAGI) above certain thresholds ($200,000 for singles, $250,000 for married couples). This tool automatically checks if you trigger this surcharge and includes it in your total tax liability."
     },
     {
         question: "Why compare 2025 and 2026?",
@@ -33,7 +41,7 @@ const faqData = [
     },
     {
         question: "Is my data stored?",
-        answer: "No. All calculations are performed biologically in your browser. No personal data, income figures, or settings are ever sent to a server or stored in a database. Your financial privacy is absolute."
+        answer: "No. All calculations are performed efficiently in your browser. No personal data, income figures, or settings are ever sent to a server or stored in a database. Your financial privacy is absolute."
     }
 ];
 

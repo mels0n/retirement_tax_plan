@@ -41,39 +41,55 @@ export const TaxSummary = () => {
         </div>
     );
 
-    // Calculate Marginal Bracket Info
+    /**
+     * Enterprise-Grade Logic for Marginal Tax Bracket Calculation.
+     * 
+     * Architecture Note:
+     * We traditionally think of marginal brackets as starting *after* the standard deduction.
+     * However, to provide a unified user experience where the "First Bucket" is the 0% Standard Deduction,
+     * we distinctively check if the user is within that 0% zone. 
+     * 
+     * If Ordinary Income < Standard Deduction, the Marginal Rate is 0%.
+     */
     // @ts-ignore
     const brackets = getTaxBrackets(year, inputs.filingStatus);
-    // Use Ordinary Taxable Income for the bracket calculation
-    const ordinaryTaxable = Math.max(0, (federalResult.adjustedGrossIncome - inputs.income.ltcg) - federalResult.standardDeduction);
 
-    let currentBracket = brackets[0];
+    // We must look at Ordinary Income specifically (AGI - LTCG) against the Standard Deduction.
+    const ordinaryIncome = federalResult.adjustedGrossIncome - inputs.income.ltcg;
+    const stdDed = federalResult.standardDeduction;
+
+    // Default: 0% Bracket (Standard Deduction)
+    let currentRate = 0;
     let filledInBracket = 0;
     let spaceRemaining = 0;
 
-    for (const bracket of brackets) {
-        if (ordinaryTaxable > bracket.min) {
-            currentBracket = bracket;
-            if (bracket.max === null) {
-                filledInBracket = ordinaryTaxable - bracket.min;
-                spaceRemaining = Infinity;
-            } else if (ordinaryTaxable < bracket.max) {
-                filledInBracket = ordinaryTaxable - bracket.min;
-                spaceRemaining = bracket.max - ordinaryTaxable;
-                break;
-            } else {
-                // We are above this bracket, continue
-            }
-        } else {
-            // We are below this bracket (shouldn't happen if we start at 0 and go up, unless 0)
-            break;
-        }
-    }
+    if (ordinaryIncome < stdDed) {
+        // USE CASE: User is within the separate Standard Deduction "Bucket"
+        currentRate = 0;
+        filledInBracket = ordinaryIncome;
+        spaceRemaining = stdDed - ordinaryIncome;
+    } else {
+        // USE CASE: User has exceeded Standard Deduction, now in Taxable Brackets
+        // We calculate position relative to "Taxable Ordinary Income"
+        const ordinaryTaxable = ordinaryIncome - stdDed;
+        let currentBracket = brackets[0];
 
-    if (ordinaryTaxable === 0) {
-        currentBracket = brackets[0];
-        filledInBracket = 0;
-        spaceRemaining = brackets[0].max! - brackets[0].min;
+        // Find the matching bracket
+        for (const bracket of brackets) {
+            if (ordinaryTaxable >= bracket.min && (bracket.max === null || ordinaryTaxable < bracket.max)) {
+                currentBracket = bracket;
+                break;
+            }
+        }
+
+        // Edge case fallback if standard deduction is exactly hit or slight float issues, 
+        // though the loop above robustly handles ranges.
+        // If we somehow didn't break (should affect top bracket implicitly), verify logic.
+        // Top bracket is handled by `max === null`.
+
+        currentRate = currentBracket.rate;
+        filledInBracket = ordinaryTaxable - currentBracket.min;
+        spaceRemaining = currentBracket.max ? currentBracket.max - ordinaryTaxable : Infinity;
     }
 
     const percentFilled = spaceRemaining === Infinity ? 100 : (filledInBracket / (filledInBracket + spaceRemaining)) * 100;
@@ -88,7 +104,7 @@ export const TaxSummary = () => {
                     value={formatCurrency(netIncome)}
                     subtext={`Gross: ${formatCurrency(grossIncome)}`}
                     highlight
-                    tooltip="Total income minus Federal and State taxes."
+                    tooltip="Total income minus Federal taxes."
                 />
 
                 <div className="grid grid-cols-2 gap-3">
@@ -106,8 +122,21 @@ export const TaxSummary = () => {
 
                 <div className="border-t border-zinc-200 dark:border-zinc-700 pt-3 space-y-1">
                     <div className="flex justify-between text-xs">
-                        <span className="text-zinc-600 dark:text-zinc-400">Federal Tax</span>
-                        <span className="font-medium text-zinc-900 dark:text-zinc-100">{formatCurrency(federalResult.totalFederalTax)}</span>
+                        <span className="text-zinc-600 dark:text-zinc-400">Regular Income Tax</span>
+                        <span className="font-medium text-zinc-900 dark:text-zinc-100">{formatCurrency(federalResult.ordinaryIncomeTax + federalResult.ltcgTax)}</span>
+                    </div>
+                    {federalResult.niitTax > 0 && (
+                        <div className="flex justify-between text-xs text-purple-600 dark:text-purple-400">
+                            <span className="flex items-center gap-1">
+                                NIIT Surcharge (3.8%)
+                                <Tooltip content="Net Investment Income Tax. Applies to the lesser of your Net Investment Income or the amount your MAGI exceeds the threshold ($200k/$250k)." />
+                            </span>
+                            <span className="font-medium">{formatCurrency(federalResult.niitTax)}</span>
+                        </div>
+                    )}
+                    <div className="flex justify-between text-xs font-bold pt-1 mt-1 border-t border-zinc-100 dark:border-zinc-700/50">
+                        <span className="text-zinc-900 dark:text-zinc-100">Total Federal Tax</span>
+                        <span className="text-zinc-900 dark:text-zinc-100">{formatCurrency(federalResult.totalFederalTax)}</span>
                     </div>
                 </div>
 
@@ -116,8 +145,8 @@ export const TaxSummary = () => {
                         <h3 className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Marginal Tax Bracket</h3>
                         <Tooltip content="The tax rate applied to your last dollar of Ordinary Income. Does not include Capital Gains rates." />
                     </div>
-                    <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
-                        {(currentBracket?.rate || 0) * 100}%
+                    <p className={`text-xl font-bold ${currentRate === 0 ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}`}>
+                        {(currentRate * 100).toFixed(0)}%
                     </p>
                     <div className="mt-1 text-[10px] text-zinc-500 space-y-1">
                         <div className="flex justify-between">
@@ -130,7 +159,7 @@ export const TaxSummary = () => {
                         </div>
                         <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1.5 rounded-full mt-1 overflow-hidden">
                             <div
-                                className="bg-orange-500 h-full rounded-full transition-all duration-500"
+                                className={`${currentRate === 0 ? 'bg-green-500' : 'bg-orange-500'} h-full rounded-full transition-all duration-500`}
                                 style={{ width: `${percentFilled}%` }}
                             ></div>
                         </div>

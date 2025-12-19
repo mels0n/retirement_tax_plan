@@ -66,73 +66,83 @@ export const OptimizationInsights = () => {
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Tax Optimization Insights</h2>
 
             <div className="grid grid-cols-1 gap-3">
-                {/* Standard Deduction (0% Bracket) */}
-                <div className="relative p-3 rounded-lg bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700">
-                    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
-                        <div className="absolute -right-4 -bottom-4 text-zinc-100 dark:text-zinc-700/30">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
-                                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-4.28 9.22a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V8.25a.75.75 0 00-1.5 0v5.94l-1.72-1.72z" clipRule="evenodd" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div className="relative z-10">
-                        <div className="flex items-center mb-1">
-                            <h3 className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide">Standard Deduction (0% Tax)</h3>
-                            <Tooltip content="The Standard Deduction is the amount of income you can earn tax-free before you start paying federal income tax." />
-                        </div>
-                        {ordinaryIncome < stdDed ? (
-                            <>
-                                <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-200 mb-0.5">
-                                    {formatCurrency(stdDed - ordinaryIncome)}
-                                </p>
-                                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                                    remaining tax-free space.
-                                </p>
-                            </>
-                        ) : (
-                            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                                Fully utilized. You have surpassed the tax-free threshold of <strong>{formatCurrency(stdDed)}</strong>.
-                            </p>
-                        )}
-                    </div>
-                </div>
-                {/* Ordinary Income Opportunity */}
-                <div className="relative p-3 rounded-lg bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
-                    {/* Decorative Icon Container - Clipped */}
-                    <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
-                        <div className="absolute -right-4 -bottom-4 text-blue-100 dark:text-blue-900/30">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
-                                <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
-                                <path fillRule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clipRule="evenodd" />
-                                <path d="M2.25 18a.75.75 0 000 1.5c5.4 0 10.63.722 15.6 2.075 1.19.324 2.4-.558 2.4-1.82V18.75a.75.75 0 00-.75-.75H2.25z" />
-                            </svg>
-                        </div>
-                    </div>
+                {/* 
+                  Feature-Sliced Design: Ordinary Income Progression 
+                  Architecture: We treat the Standard Deduction as the "0th Bracket".
+                  This simplifies the UI by presenting a single "Ordinary Income" bucket progression.
+                */}
+                {(() => {
+                    // Logic: Determine current "Virtual Bracket" (0% vs Taxable)
+                    const isWithinStdDed = ordinaryIncome < stdDed;
 
-                    {/* Content - Not Clipped */}
-                    <div className="relative z-10">
-                        <div className="flex items-center mb-1">
-                            <h3 className="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wide">Ordinary Income Room</h3>
-                            <Tooltip content="The amount of additional Ordinary Income (e.g., IRA withdrawals, Wages) you can take before jumping to the next higher tax bracket." />
-                        </div>
+                    // Unified Variables
+                    let displayRate = 0;
+                    let displaySpaceLeft = 0;
+                    let nextDollarRate = 0;
+                    let bucketLabel = "";
+                    let isHighestBracket = false;
 
-                        {ordinarySpaceLeft === Infinity ? (
-                            <p className="text-zinc-700 dark:text-zinc-300 text-sm">You are in the highest tax bracket.</p>
-                        ) : (
-                            <>
-                                <p className="text-2xl font-bold text-blue-800 dark:text-blue-200 mb-0.5">
-                                    {formatCurrency(ordinarySpaceLeft)}
-                                </p>
-                                <p className="text-xs text-blue-600 dark:text-blue-400">
-                                    remaining in the <strong>{(currentOrdBracket.rate * 100).toFixed(0)}%</strong> bracket.
-                                </p>
-                                <p className="text-[10px] text-blue-500 dark:text-blue-400 mt-1">
-                                    Next dollar taxed at <strong>{(nextOrdRate * 100).toFixed(0)}%</strong>.
-                                </p>
-                            </>
-                        )}
-                    </div>
-                </div>
+                    if (isWithinStdDed) {
+                        // CASE 1: 0% Bracket (Standard Deduction)
+                        displayRate = 0;
+                        displaySpaceLeft = stdDed - ordinaryIncome;
+                        nextDollarRate = 0.10; // Moves to 10% bracket next
+                        bucketLabel = "Standard Deduction (0% Bracket)";
+                    } else {
+                        // CASE 2: Taxable Brackets
+                        // Re-use pre-calculated scope variables
+                        displayRate = currentOrdBracket.rate;
+                        displaySpaceLeft = ordinarySpaceLeft;
+                        nextDollarRate = nextOrdRate;
+                        bucketLabel = `${(displayRate * 100).toFixed(0)}% Tax Bracket`;
+                        if (ordinarySpaceLeft === Infinity) isHighestBracket = true;
+                    }
+
+                    return (
+                        <div className={`relative p-3 rounded-lg border ${displayRate === 0 ? 'bg-zinc-50 border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700' : 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'}`}>
+                            {/* Decorative Icon Container - Clipped */}
+                            <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
+                                <div className={`absolute -right-4 -bottom-4 ${displayRate === 0 ? 'text-zinc-100 dark:text-zinc-700/30' : 'text-blue-100 dark:text-blue-900/30'}`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-16 h-16">
+                                        {displayRate === 0 ? (
+                                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-4.28 9.22a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V8.25a.75.75 0 00-1.5 0v5.94l-1.72-1.72z" clipRule="evenodd" />
+                                        ) : (
+                                            <>
+                                                <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
+                                                <path fillRule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clipRule="evenodd" />
+                                                <path d="M2.25 18a.75.75 0 000 1.5c5.4 0 10.63.722 15.6 2.075 1.19.324 2.4-.558 2.4-1.82V18.75a.75.75 0 00-.75-.75H2.25z" />
+                                            </>
+                                        )}
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {/* Content - Not Clipped */}
+                            <div className="relative z-10">
+                                <div className="flex items-center mb-1">
+                                    <h3 className={`text-xs font-bold uppercase tracking-wide ${displayRate === 0 ? 'text-zinc-600 dark:text-zinc-400' : 'text-blue-700 dark:text-blue-300'}`}>Ordinary Income Room</h3>
+                                    <Tooltip content="The amount of additional Ordinary Income (e.g., IRA withdrawals, Wages) you can take before jumping to the next higher tax bracket." />
+                                </div>
+
+                                {isHighestBracket ? (
+                                    <p className="text-zinc-700 dark:text-zinc-300 text-sm">You are in the highest tax bracket.</p>
+                                ) : (
+                                    <>
+                                        <p className={`text-2xl font-bold mb-0.5 ${displayRate === 0 ? 'text-zinc-800 dark:text-zinc-200' : 'text-blue-800 dark:text-blue-200'}`}>
+                                            {formatCurrency(displaySpaceLeft)}
+                                        </p>
+                                        <p className={`text-xs ${displayRate === 0 ? 'text-zinc-500 dark:text-zinc-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                                            remaining in the <strong>{bucketLabel}</strong>.
+                                        </p>
+                                        <p className={`text-[10px] mt-1 ${displayRate === 0 ? 'text-zinc-400 dark:text-zinc-500' : 'text-blue-500 dark:text-blue-400'}`}>
+                                            Next dollar taxed at <strong>{(nextDollarRate * 100).toFixed(0)}%</strong>.
+                                        </p>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })()}
 
                 {/* LTCG Opportunity */}
                 <div className="relative p-3 rounded-lg bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800">
@@ -185,22 +195,76 @@ export const OptimizationInsights = () => {
                         <h3 className="text-xs font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wide">SS Taxability</h3>
                         <Tooltip content="Social Security becomes taxable based on your 'Provisional Income' (AGI + 50% of SS benefits)." />
                     </div>
+                    {/* 
+                  Feature-Sliced Design: Social Security Breakpoints 
+                  Architecture: Visualizes the "Provisional Income" zones (0% -> 50% -> 85% taxable).
+                  Helps users understand how close they are to the next taxability cliff.
+                */}
                     {(() => {
                         const totalSS = inputs.income.socialSecurity + inputs.income.socialSecurityDisability;
                         if (totalSS === 0) return <p className="text-sm text-zinc-500">No Social Security income.</p>;
+
+                        // Calculate thresholds based on status
+                        let t1 = 25000;
+                        let t2 = 34000;
+                        if (inputs.filingStatus === 'mfj') {
+                            t1 = 32000;
+                            t2 = 44000;
+                        }
+                        // MFS is technically $0/$0 if living together, but typically 25/34 if separate. 
+                        // For this high-level view, we stick to the standard single/mfj splits.
 
                         const otherIncome = federalResult.adjustedGrossIncome - federalResult.taxableSS;
                         const provisionalIncome = otherIncome + (0.5 * totalSS);
                         const percentTaxable = totalSS > 0 ? (federalResult.taxableSS / totalSS) * 100 : 0;
 
+                        // Determine "Zone" and "Space Left"
+                        let zoneLabel = "";
+                        let spaceLeft = 0;
+                        let nextZoneLabel = "";
+                        let isMaxed = false;
+
+                        if (provisionalIncome < t1) {
+                            // Zone 0: 0% Taxable
+                            zoneLabel = "Tax-Free Zone";
+                            spaceLeft = t1 - provisionalIncome;
+                            nextZoneLabel = "until 50% become taxable";
+                        } else if (provisionalIncome < t2) {
+                            // Zone 1: Up to 50% Taxable
+                            zoneLabel = "50% Taxability Zone";
+                            spaceLeft = t2 - provisionalIncome;
+                            nextZoneLabel = "until 85% become taxable";
+                        } else {
+                            // Zone 2: Up to 85% Taxable
+                            zoneLabel = "Max Taxability Zone (85%)";
+                            isMaxed = true;
+                        }
+
                         return (
                             <>
-                                <p className="text-sm text-purple-900 dark:text-purple-100 mb-1">
+                                <p className="text-sm text-purple-900 dark:text-purple-100 mb-2">
                                     <strong>{percentTaxable.toFixed(1)}%</strong> of your benefits are taxable.
                                 </p>
-                                <p className="text-xs text-purple-700 dark:text-purple-300">
-                                    Provisional Income: <strong>{formatCurrency(provisionalIncome)}</strong>
-                                </p>
+
+                                {!isMaxed ? (
+                                    <div className="mt-2 p-2 rounded bg-white/50 dark:bg-black/20 border border-purple-100 dark:border-purple-800/50">
+                                        <p className="text-xl font-bold text-purple-800 dark:text-purple-200">
+                                            {formatCurrency(spaceLeft)}
+                                        </p>
+                                        <p className="text-[10px] text-purple-600 dark:text-purple-300 uppercase tracking-wide font-medium">
+                                            Room {nextZoneLabel}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">
+                                        You have reached the maximum taxability tier.
+                                    </p>
+                                )}
+
+                                <div className="mt-2 flex justify-between text-[10px] text-purple-500/80">
+                                    <span>Provisional Income:</span>
+                                    <span className="font-mono">{formatCurrency(provisionalIncome)}</span>
+                                </div>
                             </>
                         );
                     })()}

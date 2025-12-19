@@ -62,6 +62,48 @@ export const calculateTaxableSS2025 = (inputs: TaxInputs): number => {
 };
 
 /**
+ * Calculates Net Investment Income Tax (NIIT) for 2025.
+ * Rate: 3.8% on the lesser of:
+ * 1. Net Investment Income (NII)
+ * 2. MAGI - Threshold
+ * 
+ * Thresholds (not indexed for inflation):
+ * - MFJ: $250,000
+ * - MFS: $125,000
+ * - Single/HOH: $200,000
+ */
+export const calculateNIIT2025 = (inputs: TaxInputs, adjustedGrossIncome: number): { niitTax: number; nii: number } => {
+    // 1. Calculate Net Investment Income (NII)
+    // NII includes: Interest, Dividends, Capital Gains (ST & LT), Rental income, etc.
+    // For this model, we sum STCG and LTCG + explicit optional fields if present.
+    const nii = (inputs.income.stcg || 0) +
+        (inputs.income.ltcg || 0) +
+        (inputs.income.dividends || 0) +
+        (inputs.income.interest || 0);
+
+    if (nii <= 0) return { niitTax: 0, nii: 0 };
+
+    // 2. Determine Threshold based on Filing Status
+    let threshold = 200000; // Default (Single, HOH)
+    if (inputs.filingStatus === 'mfj') {
+        threshold = 250000;
+    } else if (inputs.filingStatus === 'mfs') {
+        threshold = 125000;
+    }
+
+    // 3. Calculate Excess MAGI
+    // For simplicity in this scope, we use AGI as proxy for MAGI (usually identical unless foreign income inclusions exist).
+    const excessMagi = Math.max(0, adjustedGrossIncome - threshold);
+
+    if (excessMagi <= 0) return { niitTax: 0, nii };
+
+    // 4. Calculate Tax Base (Lesser of NII or Excess MAGI)
+    const taxBase = Math.min(nii, excessMagi);
+
+    return { niitTax: taxBase * 0.038, nii };
+};
+
+/**
  * Main 2025 Tax Calculation Strategy.
  */
 export const calculateFederalTax2025 = (inputs: TaxInputs): FederalTaxResult => {
@@ -77,7 +119,9 @@ export const calculateFederalTax2025 = (inputs: TaxInputs): FederalTaxResult => 
         inputs.income.stcg +
         inputs.income.ltcg +
         inputs.income.socialSecurity +
-        inputs.income.socialSecurityDisability;
+        inputs.income.socialSecurityDisability +
+        (inputs.income.dividends || 0) +
+        (inputs.income.interest || 0);
 
     const ordinaryIncomeSources = inputs.income.wages +
         inputs.income.pensionPublic +
@@ -85,7 +129,11 @@ export const calculateFederalTax2025 = (inputs: TaxInputs): FederalTaxResult => 
         inputs.income.pensionPrivate +
         inputs.income.iraWithdrawals +
         inputs.income.stcg +
+        (inputs.income.dividends || 0) +
+        (inputs.income.interest || 0) +
         taxableSS;
+
+    const adjustedGrossIncome = ordinaryIncomeSources + inputs.income.ltcg;
 
     let taxableOrdinaryIncome = Math.max(0, ordinaryIncomeSources - standardDeduction);
     let remainingDeduction = Math.max(0, standardDeduction - ordinaryIncomeSources);
@@ -127,16 +175,23 @@ export const calculateFederalTax2025 = (inputs: TaxInputs): FederalTaxResult => 
         }
     }
 
+    // --- NIIT Calculation ---
+    const { niitTax, nii } = calculateNIIT2025(inputs, adjustedGrossIncome);
+
+    const totalFederalTax = ordinaryTax + ltcgTax + niitTax;
+
     return {
         grossIncome,
         taxableSS,
-        adjustedGrossIncome: ordinaryIncomeSources + inputs.income.ltcg,
+        adjustedGrossIncome,
         standardDeduction,
         taxableIncome: totalTaxableIncome,
         ordinaryIncomeTax: ordinaryTax,
         ltcgTax,
-        totalFederalTax: ordinaryTax + ltcgTax,
-        effectiveTaxRate: grossIncome > 0 ? (ordinaryTax + ltcgTax) / grossIncome : 0,
+        niitTax,
+        netInvestmentIncome: nii,
+        totalFederalTax,
+        effectiveTaxRate: grossIncome > 0 ? totalFederalTax / grossIncome : 0,
         brackets: bracketsUsed
     };
 };

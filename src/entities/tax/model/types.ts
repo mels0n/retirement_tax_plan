@@ -35,6 +35,8 @@ export interface FederalTaxResult {
     taxableIncome: number;
     ordinaryIncomeTax: number;
     ltcgTax: number;
+    niitTax: number; // Net Investment Income Tax (3.8% Surcharge)
+    netInvestmentIncome: number; // Helper for UI display
     totalFederalTax: number;
     effectiveTaxRate: number;
     brackets: {
