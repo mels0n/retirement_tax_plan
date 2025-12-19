@@ -29,11 +29,18 @@ export const metadata: Metadata = {
     siteName: "Retirement Tax Plan",
     locale: "en_US",
     type: "website",
+    images: [{
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'Retirement Tax Plan Preview',
+    }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Retirement Tax Plan | Optimize Your Withdrawal Strategy",
     description: "Free tax estimation tool for retirees. Compare 2025 vs 2026 tax years and optimize your federal tax liability.",
+    images: ['/twitter-image.png'],
   },
   robots: {
     index: true,
