@@ -23,11 +23,13 @@ export const OptimizationInsights = () => {
     let currentOrdBracket = brackets[0];
     let nextOrdBracket = null;
 
-    for (let i = 0; i < brackets.length; i++) {
-        const b = brackets[i];
-        if (ordinaryTaxable >= b.min && (b.max === null || ordinaryTaxable < b.max)) {
+    for (const b of brackets) {
+        if (b.max === null || ordinaryTaxable <= b.max) {
             currentOrdBracket = b;
-            nextOrdBracket = brackets[i + 1];
+            const idx = brackets.indexOf(b);
+            if (idx < brackets.length - 1) {
+                nextOrdBracket = brackets[idx + 1];
+            }
             break;
         }
     }
@@ -42,7 +44,7 @@ export const OptimizationInsights = () => {
     let currentLtcgBracket = ltcgBrackets[0];
 
     for (const b of ltcgBrackets) {
-        if (totalTaxable >= b.min && (b.max === null || totalTaxable < b.max)) {
+        if (b.max === null || totalTaxable <= b.max) {
             currentLtcgBracket = b;
             break;
         }
