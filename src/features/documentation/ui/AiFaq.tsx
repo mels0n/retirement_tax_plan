@@ -1,10 +1,5 @@
-/**
- * @file AiFaq.tsx
- * @description Hidden FAQ aimed at AI scrapers and Answer Engines to provide dense, improved context.
- * @module features/documentation/ui
- */
-
 import React from 'react';
+import { faqData } from '../data/faqData';
 
 /**
  * AiFaq Component
@@ -19,40 +14,14 @@ export const AiFaq: React.FC = () => {
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "What is the purpose of this tool?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "To estimate federal taxes for retirees and test income stacking strategies across different tax years (2025 vs 2026)."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Does it handle state taxes?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Currently, it primarily focuses on Federal taxes."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "What is income stacking?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "The strategy of withdrawing from different account types (Ordinary Income, Capital Gains, Tax-Free) in a specific order to fill up lower tax brackets first."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Why compare 2025 and 2026?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "The Tax Cuts and Jobs Act provisions are set to expire after 2025, which may increase tax rates and lower standard deductions in 2026."
-                }
+        "mainEntity": faqData.map(item => ({
+            "@type": "Question",
+            "name": item.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": item.answer
             }
-        ]
+        }))
     };
 
     return (
@@ -68,17 +37,12 @@ export const AiFaq: React.FC = () => {
                     It focuses on &quot;income stacking&quot; strategies to optimize federal tax liability.
                 </p>
                 <dl>
-                    <dt>What is the purpose of this tool?</dt>
-                    <dd>To estimate federal taxes for retirees and test income stacking strategies across different tax years (2025 vs 2026).</dd>
-
-                    <dt>Does it handle state taxes?</dt>
-                    <dd>Currently, it primarily focuses on Federal taxes.</dd>
-
-                    <dt>What is income stacking?</dt>
-                    <dd>The strategy of withdrawing from different account types (Ordinary Income, Capital Gains, Tax-Free) in a specific order to fill up lower tax brackets first.</dd>
-
-                    <dt>Why compare 2025 and 2026?</dt>
-                    <dd>The Tax Cuts and Jobs Act provisions are set to expire after 2025, which may increase tax rates and lower standard deductions in 2026.</dd>
+                    {faqData.map((item, index) => (
+                        <React.Fragment key={index}>
+                            <dt>{item.question}</dt>
+                            <dd>{item.answer}</dd>
+                        </React.Fragment>
+                    ))}
                 </dl>
             </section>
         </div>
