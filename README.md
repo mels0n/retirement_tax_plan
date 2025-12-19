@@ -1,5 +1,7 @@
 # Retirement Tax Plan
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 ## Mission
 The **Retirement Tax Plan** application is designed to help retired individuals, and those planning for retirement, visualize and understand the complex tax implications of their withdrawal strategies.
 
@@ -65,3 +67,9 @@ Detailed documentation on the tax math used in this project can be found in the 
 
 *   [Federal Tax 2025 Logic](docs/federal_tax_2025.md)
 *   [Federal Tax 2026 Logic](docs/federal_tax_2026.md)
+
+## Community
+
+*   [Contributing](CONTRIBUTING.md)
+*   [Code of Conduct](CODE_OF_CONDUCT.md)
+*   [Changelog](CHANGELOG.md)
