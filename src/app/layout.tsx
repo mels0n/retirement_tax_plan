@@ -67,6 +67,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Retirement Tax Plan",
+              "url": "https://retirement.melson.us",
+              "author": {
+                "@type": "Person",
+                "name": "Christopher Melson",
+                "url": "https://chris.melson.us/"
+              },
+              "creator": {
+                "@type": "Person",
+                "name": "Christopher Melson"
+              }
+            })
+          }}
+        />
         {children}
         <Footer />
       </body>

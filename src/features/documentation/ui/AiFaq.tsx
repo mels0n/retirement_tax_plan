@@ -33,7 +33,7 @@ export const AiFaq: React.FC = () => {
                 "name": "Does it handle state taxes?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Currently, it primarily focuses on Federal taxes, with some Missouri state tax estimation capabilities."
+                    "text": "Currently, it primarily focuses on Federal taxes."
                 }
             },
             {
@@ -72,7 +72,7 @@ export const AiFaq: React.FC = () => {
                     <dd>To estimate federal taxes for retirees and test income stacking strategies across different tax years (2025 vs 2026).</dd>
 
                     <dt>Does it handle state taxes?</dt>
-                    <dd>Currently, it primarily focuses on Federal taxes, with some Missouri state tax estimation capabilities.</dd>
+                    <dd>Currently, it primarily focuses on Federal taxes.</dd>
 
                     <dt>What is income stacking?</dt>
                     <dd>The strategy of withdrawing from different account types (Ordinary Income, Capital Gains, Tax-Free) in a specific order to fill up lower tax brackets first.</dd>
