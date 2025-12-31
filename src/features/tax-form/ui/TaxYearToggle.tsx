@@ -14,6 +14,11 @@ export const TaxYearToggle = () => {
         <div className="flex items-center justify-between bg-white dark:bg-zinc-900 p-4 rounded-xl shadow-sm border border-zinc-200 dark:border-zinc-800">
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Tax Year</h2>
             <div className="flex items-center gap-4">
+                {year === '2027' && (
+                    <span className="text-xs font-bold text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/30 px-2 py-1 rounded-full border border-amber-200 dark:border-amber-800">
+                        ⚠️ Projected
+                    </span>
+                )}
                 <a
                     href={`/docs/${year}/`}
                     target="_blank"
@@ -30,6 +35,7 @@ export const TaxYearToggle = () => {
                 >
                     <option value="2025">2025</option>
                     <option value="2026">2026</option>
+                    <option value="2027">2027</option>
                 </select>
             </div>
         </div>

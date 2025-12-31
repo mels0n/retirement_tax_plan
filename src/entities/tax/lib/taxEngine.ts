@@ -1,18 +1,22 @@
 import { TaxInputs, FederalTaxResult, TaxYear, FilingStatus } from '../model/types';
 import { calculateFederalTax2025 } from './engines/TaxEngine2025';
 import { calculateFederalTax2026 } from './engines/TaxEngine2026';
+import { calculateFederalTax2027 } from './engines/TaxEngine2027';
 
 // Helper to get brackets for UI visualization
 import taxConfig2025 from '../config/tax_config_2025.json';
 import taxConfig2026 from '../config/tax_config_2026.json';
+import taxConfig2027 from '../config/tax_config_2027.json';
 
 export const getTaxBrackets = (year: TaxYear, status: FilingStatus) => {
+    if (year === '2027') return taxConfig2027.federal.brackets[status];
     const config = year === '2026' ? taxConfig2026 : taxConfig2025;
     // @ts-ignore
     return config.federal.brackets[status];
 };
 
 export const getLtcgBrackets = (year: TaxYear, status: FilingStatus) => {
+    if (year === '2027') return taxConfig2027.federal.ltcgBrackets[status];
     const config = year === '2026' ? taxConfig2026 : taxConfig2025;
     // @ts-ignore
     return config.federal.ltcgBrackets[status];
@@ -30,6 +34,9 @@ export * from '../model/types';
  * @returns A detailed `FederalTaxResult` object.
  */
 export const calculateFederalTax = (inputs: TaxInputs, year: TaxYear): FederalTaxResult => {
+    if (year === '2027') {
+        return calculateFederalTax2027(inputs);
+    }
     if (year === '2026') {
         return calculateFederalTax2026(inputs);
     }

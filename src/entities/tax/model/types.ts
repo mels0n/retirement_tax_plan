@@ -1,5 +1,5 @@
 export type FilingStatus = 'single' | 'mfj' | 'hoh' | 'mfs';
-export type TaxYear = '2025' | '2026';
+export type TaxYear = '2025' | '2026' | '2027';
 
 /**
  * Represents the comprehensive set of user inputs required for tax calculation.

@@ -9,6 +9,7 @@ export async function generateStaticParams() {
     return [
         { year: '2025' },
         { year: '2026' },
+        { year: '2027' },
     ];
 }
 

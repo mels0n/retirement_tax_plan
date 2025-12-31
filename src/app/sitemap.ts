@@ -44,6 +44,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.6,
         },
         {
+            url: `${baseUrl}/docs/2027`,
+            lastModified: new Date(),
+            changeFrequency: 'yearly',
+            priority: 0.6,
+        },
+        {
             url: `${baseUrl}/guide/ai-faq`,
             lastModified: new Date(),
             changeFrequency: 'weekly',
