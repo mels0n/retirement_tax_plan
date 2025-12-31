@@ -1,8 +1,3 @@
-/**
- * @file faqData.ts
- * @description specialized tax estimation tool data
- */
-
 export const faqData = [
     {
         question: "Why was this tool created?",

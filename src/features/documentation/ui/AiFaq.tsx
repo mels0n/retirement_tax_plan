@@ -1,5 +1,6 @@
 import React from 'react';
-import { faqData } from '../data/faqData';
+import { faqData } from '@/shared/data/faq';
+import { generateFaqSchema } from '@/shared/lib/aeo';
 
 /**
  * AiFaq Component
@@ -11,18 +12,7 @@ import { faqData } from '../data/faqData';
  * @returns {JSX.Element} The visually hidden AI FAQ component
  */
 export const AiFaq: React.FC = () => {
-    const jsonLd = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": faqData.map(item => ({
-            "@type": "Question",
-            "name": item.question,
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": item.answer
-            }
-        }))
-    };
+    const jsonLd = generateFaqSchema(faqData);
 
     return (
         <div className="sr-only" aria-hidden="true">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { generateSoftwareAppSchema } from "@/shared/lib/aeo";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -70,21 +71,19 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              "name": "Retirement Tax Plan",
-              "url": "https://retirement.melson.us",
-              "author": {
-                "@type": "Person",
-                "name": "Christopher Melson",
-                "url": "https://chris.melson.us/"
-              },
-              "creator": {
-                "@type": "Person",
-                "name": "Christopher Melson"
-              }
-            })
+            __html: JSON.stringify(
+              generateSoftwareAppSchema(
+                "Retirement Tax Plan",
+                "https://retirement.melson.us",
+                "https://retirement.melson.us/og-image.png",
+                "Free tax estimation tool for retirees. Compare 2025 vs 2026 tax years and optimize your federal tax liability with income stacking strategies.",
+                "Christopher Melson",
+                "https://chris.melson.us/",
+                "FinanceApplication",
+                "Web",
+                "Free"
+              )
+            )
           }}
         />
         {children}

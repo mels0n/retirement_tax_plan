@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { faqData } from '../data/faqData';
+import { faqData } from '@/shared/data/faq';
 
 /**
  * Faq Component
